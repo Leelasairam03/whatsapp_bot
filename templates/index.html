@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Student Reports</title>
+</head>
+<body>
+    <h2>Upload ZIP File Containing Student Reports</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" accept=".zip">
+        <button type="button" onclick="uploadFile()">Upload</button>
+    </form>
+    <p id="responseMessage"></p>
+
+    <script>
+        function uploadFile() {
+            let formData = new FormData();
+            let fileInput = document.getElementById("fileInput").files[0];
+
+            if (!fileInput) {
+                alert("Please select a file!");
+                return;
+            }
+
+            formData.append("file", fileInput);
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("responseMessage").innerText = data.message || data.error;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
